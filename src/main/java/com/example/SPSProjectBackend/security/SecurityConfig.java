@@ -214,6 +214,7 @@ public class SecurityConfig {
         config.setAllowedOriginPatterns(List.of(
                 "http://localhost:*",
                 "http://10.128.1.227:*",
+                "http://10.128.1.59:*",
                 "http://127.0.0.1:*"));
         config.setAllowedMethods(List.of(
                 "GET", "POST", "PUT", "DELETE", "OPTIONS"));
