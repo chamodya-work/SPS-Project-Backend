@@ -67,6 +67,8 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
+import java.time.ZoneId;
+
 
 @Entity
 @Getter
@@ -139,7 +141,14 @@ public class Approval {
         this.systemBy = systemBy;
 
         // Set current date and time
-        this.approvedDate = LocalDate.now();
-        this.approvedTime = LocalTime.now().format(DateTimeFormatter.ofPattern("hh:mm:ss a"));
+//        this.approvedDate = LocalDate.now();
+
+        //fix the time and date isuue
+         this.approvedDate = LocalDate.now(ZoneId.of("Asia/Colombo"));
+
+//        this.approvedTime = LocalTime.now().format(DateTimeFormatter.ofPattern("hh:mm:ss a"));
+        this.approvedTime = LocalTime.now(ZoneId.of("Asia/Colombo"))
+                .format(DateTimeFormatter.ofPattern("hh:mm:ss a"));
+
     }
 }
