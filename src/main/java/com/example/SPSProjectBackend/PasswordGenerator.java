@@ -46,7 +46,7 @@ public class PasswordGenerator {
             Encryption encryption = new Encryption();
 
             // Test with your original working user first
-            String userId = "DEO1CONWPN";
+            String userId = "48020DEO1";
             String password = "test123";
 
             System.out.println("=== Testing with Original Working User ===");
