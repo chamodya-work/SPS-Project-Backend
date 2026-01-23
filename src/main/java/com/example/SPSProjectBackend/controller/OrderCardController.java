@@ -1,5 +1,6 @@
 package com.example.SPSProjectBackend.controller;
 
+import com.example.SPSProjectBackend.dto.JobTypeCountDTO;
 import com.example.SPSProjectBackend.dto.OrderCardDTO;
 import com.example.SPSProjectBackend.service.OrderCardService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -121,6 +122,17 @@ public class OrderCardController {
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                     .body(Collections.singletonMap("error", "Failed to delete order card: " + e.getMessage()));
+        }
+    }
+
+    @GetMapping("/job-type-counts")
+    public ResponseEntity<?> getJobTypeCounts() {
+        try {
+            List<JobTypeCountDTO> jobTypeCounts = orderCardService.getJobTypeCounts();
+            return ResponseEntity.ok(jobTypeCounts);
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(Collections.singletonMap("error", "Failed to fetch job type counts: " + e.getMessage()));
         }
     }
 }

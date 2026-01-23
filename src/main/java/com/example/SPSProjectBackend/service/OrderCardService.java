@@ -1,5 +1,6 @@
 package com.example.SPSProjectBackend.service;
 
+import com.example.SPSProjectBackend.dto.JobTypeCountDTO;
 import com.example.SPSProjectBackend.dto.OrderCardDTO;
 import com.example.SPSProjectBackend.model.OrderCard;
 import com.example.SPSProjectBackend.model.OrderCardId;
@@ -130,6 +131,10 @@ public class OrderCardService {
         } else {
             throw new RuntimeException("Order card not found with project: " + projectNo + " and dept: " + deptId);
         }
+    }
+
+    public List<JobTypeCountDTO> getJobTypeCounts() {
+        return orderCardRepository.countByJobType();
     }
 
     // Conversion methods
