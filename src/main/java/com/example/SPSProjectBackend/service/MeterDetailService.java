@@ -10,6 +10,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -87,6 +88,40 @@ public class MeterDetailService {
                 .map(this::convertToDTO)
                 .collect(Collectors.toList());
     }
+
+    //delete previous data and replace new mtr values
+    @Transactional
+    public List<MeterDetailDTO> replaceMeterDetailsBatch(
+            List<MeterDetailDTO> meterDetailDTOs) {
+
+        if (meterDetailDTOs == null || meterDetailDTOs.isEmpty()) {
+            return Collections.emptyList();
+        }
+
+        //  Decide delete scope (VERY IMPORTANT)
+        String orderCardNo = meterDetailDTOs.get(0).getOrderCardNo();
+
+        //  DELETE existing records for this order card
+        meterDetailRepository.deleteByOrderCardNo(orderCardNo);
+
+        //  INSERT fresh data
+        List<MeterDetail> meterDetails = meterDetailDTOs.stream()
+                .map(dto -> {
+                    MeterDetail entity = convertToEntity(dto);
+                    entity.setEnteredDtime(LocalDateTime.now());
+                    entity.setEditedDtime(LocalDateTime.now());
+                    return entity;
+                })
+                .collect(Collectors.toList());
+
+        List<MeterDetail> saved = meterDetailRepository.saveAll(meterDetails);
+
+        //  Return DTOs
+        return saved.stream()
+                .map(this::convertToDTO)
+                .collect(Collectors.toList());
+    }
+
 
     @Transactional
     public MeterDetailDTO updateMeterDetail(String orderCardNo, String mtrType, MeterDetailDTO meterDetailDTO) {

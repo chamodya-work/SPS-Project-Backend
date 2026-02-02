@@ -74,7 +74,24 @@ public class MeterDetailController {
         }
     }
 
-  //this  put mapping not supporting List<MeterDetailDTO>
+    //this is delete existent meter details and post fresh new mtr details
+    @PostMapping("/batch-replace")
+    public ResponseEntity<?> createOrReplaceMeterDetailsBatch(
+            @RequestBody List<MeterDetailDTO> meterDetailDTOs) {
+        try {
+            List<MeterDetailDTO> saved =
+                    meterDetailService.replaceMeterDetailsBatch(meterDetailDTOs);
+
+            return ResponseEntity.status(HttpStatus.CREATED).body(saved);
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(Collections.singletonMap(
+                            "error", "Failed to save meter details: " + e.getMessage()));
+        }
+    }
+
+
+    //this  put mapping not supporting List<MeterDetailDTO>
     @PutMapping
     public ResponseEntity<?> updateMeterDetail(
             @RequestParam String orderCardNo,
