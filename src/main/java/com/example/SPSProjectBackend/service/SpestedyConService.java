@@ -24,4 +24,8 @@ public class SpestedyConService {
     public List<SpestedyCon> getByDeptId(String deptId) {
         return repository.findByIdDeptId(deptId);
     }
+
+    public List<Object[]> getByAllocatedTo(String allocatedTo) {
+        return repository.findReferenceAndDescriptionByAllocatedTo(allocatedTo);
+    }
 }
