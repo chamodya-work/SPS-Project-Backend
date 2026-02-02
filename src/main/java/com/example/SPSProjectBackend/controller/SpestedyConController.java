@@ -4,6 +4,7 @@ import com.example.SPSProjectBackend.model.SpestedyCon;
 import com.example.SPSProjectBackend.service.SpestedyConService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+import java.util.Date;
 
 import java.util.List;
 
@@ -28,5 +29,16 @@ public class SpestedyConController {
     @GetMapping("/dept/{deptId}")
     public List<SpestedyCon> getByDeptId(@PathVariable String deptId) {
         return service.getByDeptId(deptId);
+    }
+
+    // GET: by allocatedTo
+    @GetMapping("/appointments/{allocatedTo}")
+    public List<Object[]> getByAllocatedTo(@PathVariable String allocatedTo) {
+        return service.getByAllocatedTo(allocatedTo);
+    }
+
+    @GetMapping("/health")
+    public String healthCheck() {
+        return "API is running - " + new Date();
     }
 }
