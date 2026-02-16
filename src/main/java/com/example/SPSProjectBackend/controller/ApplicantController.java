@@ -31,7 +31,6 @@ import com.example.SPSProjectBackend.service.ApplicantService;
 
 // import java.util.List;
 // import java.util.Optional;
-
 @RestController
 @RequestMapping("/api/applicants")
 public class ApplicantController {
@@ -47,8 +46,9 @@ public class ApplicantController {
 
     @GetMapping("/search")
     public ResponseEntity<?> searchApplicantByIdNo(@RequestParam String idNo) {
-        Optional<ApplicantDTO> applicantDTO = applicantService.getApplicantById(idNo);
-
+        // Optional<ApplicantDTO> applicantDTO = applicantService.getApplicantById(idNo);
+        //UPDATED: for function name
+        Optional<ApplicantDTO> applicantDTO = applicantService.getApplicantByIdNo(idNo);
         if (applicantDTO.isPresent()) {
             return ResponseEntity.ok(applicantDTO.get());
         } else {
@@ -80,6 +80,7 @@ public class ApplicantController {
 
     @PostMapping("/save")
     public ApplicantDTO createApplicant(@RequestBody ApplicantDTO applicantDTO) {
+
         return applicantService.saveApplicant(applicantDTO);
     }
 
@@ -140,9 +141,16 @@ public class ApplicantController {
         }
     }
 
+//    @GetMapping("/{idNo}")
+//    public ResponseEntity<ApplicantDTO> getApplicantById(@PathVariable String idNo) {
+//        Optional<ApplicantDTO> applicant = applicantService.getApplicantById(idNo);
+//        return applicant.map(ResponseEntity::ok)
+//                .orElseGet(() -> ResponseEntity.notFound().build());
+//    }
+
     @GetMapping("/{idNo}")
     public ResponseEntity<ApplicantDTO> getApplicantById(@PathVariable String idNo) {
-        Optional<ApplicantDTO> applicant = applicantService.getApplicantById(idNo);
+        Optional<ApplicantDTO> applicant = applicantService.getApplicantByIdNo(idNo);
         return applicant.map(ResponseEntity::ok)
                 .orElseGet(() -> ResponseEntity.notFound().build());
     }
