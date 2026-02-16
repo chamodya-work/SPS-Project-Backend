@@ -167,20 +167,34 @@ public class ApplicantService {
     }
 
     // Get applicant by ID
+//    public Optional<ApplicantDTO> getApplicantById(String idNo) {
+//        // Optional<Applicant> applicant =
+//        // applicantRepository.findById(String.valueOf(Integer.valueOf(idNo)));
+//        // return applicant.map(this::convertToDTO);
+//        // return applicantRepository.findByIdNo(idNo);
+//        try {
+//            Long applicantId = Long.parseLong(idNo);
+//            Optional<Applicant> applicant = applicantRepository.findById(String.valueOf(applicantId));
+//            return applicant.map(this::convertToDTO);
+//        } catch (NumberFormatException e) {
+//            // Handle the exception
+//            throw new IllegalArgumentException("Invalid applicant ID: " + idNo, e);
+//        }
+//    }
+
+    //UPDATED: Error number format exception
     public Optional<ApplicantDTO> getApplicantById(String idNo) {
-        // Optional<Applicant> applicant =
-        // applicantRepository.findById(String.valueOf(Integer.valueOf(idNo)));
-        // return applicant.map(this::convertToDTO);
-        // return applicantRepository.findByIdNo(idNo);
-        try {
-            Long applicantId = Long.parseLong(idNo);
-            Optional<Applicant> applicant = applicantRepository.findById(String.valueOf(applicantId));
-            return applicant.map(this::convertToDTO);
-        } catch (NumberFormatException e) {
-            // Handle the exception
-            throw new IllegalArgumentException("Invalid applicant ID: " + idNo, e);
+
+        if (idNo == null || idNo.trim().isEmpty()) {
+            throw new IllegalArgumentException("Invalid applicant ID: " + idNo);
         }
+
+        Optional<Applicant> applicant =
+                applicantRepository.findById(idNo.trim());
+
+        return applicant.map(this::convertToDTO);
     }
+
 
     // Save applicant
     public ApplicantDTO saveApplicant(ApplicantDTO applicantDTO) {
