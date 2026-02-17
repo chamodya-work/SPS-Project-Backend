@@ -26,6 +26,10 @@ public class SpestedyConService {
     }
 
     public List<Object[]> getByAllocatedTo(String allocatedTo) {
-        return repository.findReferenceAndDescriptionByAllocatedTo(allocatedTo);
+        return repository.findWestimateNoAndDescriptionByAllocatedTo(allocatedTo);
     }
+
+    // public List<Object[]> getByReferenceNo(String allocatedTo, String referenceNo) {
+    //     return repository.findByReferenceNo(allocatedTo, referenceNo);
+    // }
 }
