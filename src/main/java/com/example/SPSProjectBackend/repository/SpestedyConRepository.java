@@ -32,13 +32,21 @@ public interface SpestedyConRepository extends JpaRepository<SpestedyCon, Speste
     List<SpestedyCon> findByIdDeptId(String deptId); // filter by deptId
     
     @Query("""
-    SELECT s.referenceNo, s.description
+    SELECT s.westimateNo, s.description
     FROM SpestedyCon s
     WHERE TRIM(s.allocatedTo) = :allocatedTo
     """)
-    List<Object[]> findReferenceAndDescriptionByAllocatedTo(
+    List<Object[]> findWestimateNoAndDescriptionByAllocatedTo(
             @Param("allocatedTo") String allocatedTo);
 
+
+//     @Query("""
+//     SELECT s.westimateNo FROM SpestedyCon s
+//     WHERE TRIM(s.allocatedTo) = :allocatedTo AND TRIM(s.referenceNo) = :referenceNo
+//     """)
+//     List<Object[]> findByReferenceNo(
+//             @Param("allocatedTo") String allocatedTo,
+//             @Param("referenceNo") String referenceNo);
 }
 
 

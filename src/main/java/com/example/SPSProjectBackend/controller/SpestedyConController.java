@@ -37,8 +37,20 @@ public class SpestedyConController {
         return service.getByAllocatedTo(allocatedTo);
     }
 
-    @GetMapping("/health")
-    public String healthCheck() {
-        return "API is running - " + new Date();
-    }
+    // @GetMapping("/health")
+    // public String healthCheck() {
+    //     return "API is running - " + new Date();
+    // }
+
+    // @GetMapping("/westimateNo/{allocatedTo}/{referenceNo}")
+    // public List<Object[]> getByReferenceNo(@PathVariable String allocatedTo, @PathVariable String referenceNo) {
+    //     return service.getByReferenceNo(allocatedTo, referenceNo);
+    // }
+
+    // @GetMapping("/westimateNoByParam")
+    // public List<Object[]> getWestimateNoByParam(
+    //         @RequestParam String allocatedTo, 
+    //         @RequestParam String referenceNo) {
+    //     return service.getByReferenceNo(allocatedTo, referenceNo);
+    // }
 }
