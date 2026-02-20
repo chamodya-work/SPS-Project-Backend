@@ -114,17 +114,32 @@ public interface LoginRepository extends JpaRepository<SaUser, String> {
                         "WHERE TRIM(UPPER(s.userId)) = TRIM(UPPER(:userId))")
         List<LoginBranchInfoDTO> getLoginBranchInfo(@Param("userId") String userId);
 
-        // filter menus by logged user's RPT_USER (branch) and DEPT_TYPE
-        @Query("SELECT DISTINCT NEW com.example.SPSProjectBackend.dto.MainMenuDTO(m.menuCode, m.displayName, m.description, m.orderKey) "
-                        +
-                        "FROM SaUser s " +
-                        "JOIN Gldeptin g ON TRIM(UPPER(function('substr', s.rptUser, 1, 6))) = TRIM(UPPER(g.deptId)) " +
-                        "JOIN DeptType d ON TRIM(UPPER(d.deptTypeCode)) = TRIM(UPPER(g.deptType)) " +
-                        "JOIN DeptTypeMenu dtm ON TRIM(UPPER(dtm.id.deptTypeCode)) = TRIM(UPPER(d.deptTypeCode)) " +
-                        "JOIN MainMenu m ON TRIM(UPPER(m.menuCode)) = TRIM(UPPER(dtm.id.menuCode)) " +
-                        "WHERE TRIM(UPPER(s.userId)) = TRIM(UPPER(:userId)) " +
-                        "ORDER BY m.orderKey")
-        List<MainMenuDTO> getMainMenusForUser(@Param("userId") String userId);
+//        // filter menus by logged user's RPT_USER (branch) and DEPT_TYPE
+//        @Query("SELECT DISTINCT NEW com.example.SPSProjectBackend.dto.MainMenuDTO(m.menuCode, m.displayName, m.description, m.orderKey) "
+//                        +
+//                        "FROM SaUser s " +
+//                        "JOIN Gldeptin g ON TRIM(UPPER(function('substr', s.rptUser, 1, 6))) = TRIM(UPPER(g.deptId)) " +
+//                        "JOIN DeptType d ON TRIM(UPPER(d.deptTypeCode)) = TRIM(UPPER(g.deptType)) " +
+//                        "JOIN DeptTypeMenu dtm ON TRIM(UPPER(dtm.id.deptTypeCode)) = TRIM(UPPER(d.deptTypeCode)) " +
+//                        "JOIN MainMenu m ON TRIM(UPPER(m.menuCode)) = TRIM(UPPER(dtm.id.menuCode)) " +
+//                        "WHERE TRIM(UPPER(s.userId)) = TRIM(UPPER(:userId)) " +
+//                        "ORDER BY m.orderKey")
+//        List<MainMenuDTO> getMainMenusForUser(@Param("userId") String userId);
+
+    //updated main menu with specific userRole capability
+    @Query("SELECT DISTINCT NEW com.example.SPSProjectBackend.dto.MainMenuDTO(m.menuCode, m.displayName, m.description, m.orderKey) " +
+            "FROM SaUser s " +
+            "JOIN Gldeptin g ON TRIM(UPPER(function('substr', s.rptUser, 1, 6))) = TRIM(UPPER(g.deptId)) " +
+            "JOIN DeptType d ON TRIM(UPPER(d.deptTypeCode)) = TRIM(UPPER(g.deptType)) " +
+            "JOIN DeptTypeMenu dtm ON TRIM(UPPER(dtm.id.deptTypeCode)) = TRIM(UPPER(d.deptTypeCode)) " +
+            "JOIN MainMenu m ON TRIM(UPPER(m.menuCode)) = TRIM(UPPER(dtm.id.menuCode)) " +
+            "JOIN TaskUserCategory tuc ON TRIM(UPPER(tuc.menuCode)) = TRIM(UPPER(m.menuCode)) " +
+            "                         AND TRIM(UPPER(tuc.userRoleCode)) = TRIM(UPPER(s.userLevel)) " +
+            "JOIN Task t ON TRIM(UPPER(tuc.activityCode)) = TRIM(UPPER(t.activityCode)) " +
+            "WHERE TRIM(UPPER(s.userId)) = TRIM(UPPER(:userId)) " +
+            "ORDER BY m.orderKey")
+    List<MainMenuDTO> getMainMenusForUser(@Param("userId") String userId);
+
 
         // fetches tasks for the given menu code and only for the logged-in user's level
         // (userLevel)
