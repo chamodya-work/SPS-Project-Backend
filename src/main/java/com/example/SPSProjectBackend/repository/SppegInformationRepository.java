@@ -6,6 +6,7 @@ import com.example.SPSProjectBackend.model.SppegInformationId;
 
 import java.util.List;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 
 public interface SppegInformationRepository extends JpaRepository<SppegInformation, SppegInformationId> {
 
@@ -14,4 +15,8 @@ public interface SppegInformationRepository extends JpaRepository<SppegInformati
 
     //    @Query("SELECT s FROM SppegInformation s WHERE s.deptId = '4' AND s.parentId = '1'")
     //    List<SppegInformation> findByParentId();
+
+    // NEW: Find by department only
+    @Query("SELECT s FROM SppegInformation s WHERE s.deptId = :deptId")
+    List<SppegInformation> findByDeptId(@Param("deptId") String deptId);
 }

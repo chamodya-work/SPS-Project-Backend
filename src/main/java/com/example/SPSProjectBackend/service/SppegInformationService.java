@@ -19,6 +19,10 @@ public class SppegInformationService {
         return repository.findAll();
     }
 
+    public List<SppegInformation> getByDeptId(String deptId) {
+    return repository.findByDeptId(deptId);
+}
+
     public Optional<SppegInformation> getById(SppegInformationId id) {
         return repository.findById(id);
     }
