@@ -38,6 +38,12 @@ public class SppegInformationController {
         return service.getById(key);
     }
 
+    @GetMapping("/department/{deptId}")
+public List<SppegInformation> getByDepartment(@PathVariable String deptId) {
+    logger.info("Fetching all records for department: {}", deptId);
+    return service.getByDeptId(deptId);
+}
+
     @PostMapping
     public SppegInformation create(@RequestBody SppegInformation info) {
         return service.save(info);
