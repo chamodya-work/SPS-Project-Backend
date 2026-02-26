@@ -458,4 +458,42 @@ public class SaUserService {
             throw new RuntimeException("Invalid user ID");
         }
     }
+
+    // Add this method to SaUserService.java
+    public SaUser getUserByEpfNo(String epfno) {
+        if (epfno == null || epfno.trim().isEmpty()) {
+            throw new RuntimeException("EPF number must not be empty");
+        }
+
+        String normalizedEpfno = epfno.trim().toUpperCase();
+        logger.info("Fetching user by EPF: {}", normalizedEpfno);
+
+        Optional<SaUser> userOpt = saUserRepository.findByEpfNo(normalizedEpfno);
+        if (userOpt.isEmpty()) {
+            throw new RuntimeException("User not found with EPF number: " + epfno);
+        }
+
+        SaUser user = userOpt.get();
+
+        // Check if user is inactive
+        if (user.getStatus() != null && user.getStatus() == 1) {
+            throw new RuntimeException("User account is inactive");
+        }
+
+        // Check expiry date (if present)
+        if (user.getExpiryDate() != null) {
+            try {
+                LocalDate expiryDate = user.getExpiryDate().toInstant()
+                        .atZone(ZoneId.systemDefault()).toLocalDate();
+                if (LocalDate.now().isAfter(expiryDate)) {
+                    throw new RuntimeException("User account has expired on " + expiryDate);
+                }
+            } catch (Exception e) {
+                logger.warn("Could not parse expiry date for EPF {}: {}", normalizedEpfno, e.getMessage());
+                // Allow login if date parsing fails (as in normal login)
+            }
+        }
+
+        return user;
+    }
 }
