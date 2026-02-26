@@ -56,4 +56,8 @@ import java.util.Optional;
 public interface SaUserRepository extends CrudRepository<SaUser, String> {
         @Query("SELECT u FROM SaUser u WHERE TRIM(u.userId) = :userId")
         Optional<SaUser> findByUserId(@Param("userId") String userId);
+
+        //this is for getting userDate using EPF number
+        @Query("SELECT u FROM SaUser u WHERE TRIM(u.epfno) = :epfno")
+        Optional<SaUser> findByEpfNo(@Param("epfno") String epfno);
 }
