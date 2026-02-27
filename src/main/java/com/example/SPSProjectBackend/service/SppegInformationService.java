@@ -38,4 +38,56 @@ public class SppegInformationService {
     public List<SppegInformation> getByParentId(String deptId, String parentId) {
         return repository.findByParentId(deptId, parentId);
     }
+
+    // NEW: Add child node
+    public SppegInformation addChildNode(String parentId, String deptId, String newNodeId, String newNodeName, String description) {
+        SppegInformation childNode = new SppegInformation();
+        childNode.setId(newNodeId);
+        childNode.setParentId(parentId);
+        childNode.setDeptId(deptId);
+        childNode.setName(newNodeName);
+        childNode.setDescription(description);
+        
+        return repository.save(childNode);
+    }
+
+    // NEW: Delete node and optionally its children
+    public void deleteNodeAndChildren(SppegInformationId id) {
+        // First, find all children of this node
+        Optional<SppegInformation> nodeOpt = repository.findById(id);
+        if (nodeOpt.isPresent()) {
+            SppegInformation node = nodeOpt.get();
+            
+            // Find and delete all children recursively
+            List<SppegInformation> children = repository.findByParentId(node.getDeptId(), node.getId());
+            for (SppegInformation child : children) {
+                SppegInformationId childId = new SppegInformationId(
+                    child.getId(), 
+                    child.getParentId(), 
+                    child.getDeptId()
+                );
+                deleteNodeAndChildren(childId); // Recursive delete
+            }
+            
+            // Delete the node itself
+            repository.deleteById(id);
+        }
+    }
+
+    // NEW: Check if node exists
+    public boolean nodeExists(SppegInformationId id) {
+        return repository.existsById(id);
+    }
+
+    // NEW: Update node
+    public SppegInformation updateNode(SppegInformationId id, String newName, String newDescription) {
+        Optional<SppegInformation> nodeOpt = repository.findById(id);
+        if (nodeOpt.isPresent()) {
+            SppegInformation node = nodeOpt.get();
+            if (newName != null) node.setName(newName);
+            if (newDescription != null) node.setDescription(newDescription);
+            return repository.save(node);
+        }
+        return null;
+    }
 }

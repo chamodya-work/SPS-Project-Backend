@@ -12,6 +12,11 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 import java.util.Optional;
 
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import java.util.HashMap;
+import java.util.Map;
+
 
 @RestController
 @RequestMapping("/api/sppeg")
@@ -39,10 +44,10 @@ public class SppegInformationController {
     }
 
     @GetMapping("/department/{deptId}")
-public List<SppegInformation> getByDepartment(@PathVariable String deptId) {
-    logger.info("Fetching all records for department: {}", deptId);
-    return service.getByDeptId(deptId);
-}
+    public List<SppegInformation> getByDepartment(@PathVariable String deptId) {
+        logger.info("Fetching all records for department: {}", deptId);
+        return service.getByDeptId(deptId);
+    }
 
     @PostMapping
     public SppegInformation create(@RequestBody SppegInformation info) {
@@ -66,6 +71,71 @@ public List<SppegInformation> getByDepartment(@PathVariable String deptId) {
     public List<SppegInformation> getPeggingTreeNodes(@RequestParam("department_id") String departmentId,
                                                       @RequestParam("parent_id") String parentId) {
         return service.getByParentId(departmentId, parentId);
+    }
+
+     // NEW: Add child node endpoint
+    @PostMapping("/add-child")
+    public ResponseEntity<?> addChildNode(@RequestBody Map<String, String> request) {
+        try {
+            String parentId = request.get("parentId");
+            String deptId = request.get("deptId");
+            String newNodeId = request.get("newNodeId");
+            String newNodeName = request.get("newNodeName");
+            String description = request.get("description");
+            
+            logger.info("Adding child node: {} to parent: {} in dept: {}", newNodeName, parentId, deptId);
+            
+            // Check if node already exists
+            SppegInformationId newId = new SppegInformationId(newNodeId, parentId, deptId);
+            if (service.nodeExists(newId)) {
+                Map<String, String> error = new HashMap<>();
+                error.put("error", "Node with this ID already exists");
+                return ResponseEntity.status(HttpStatus.CONFLICT).body(error);
+            }
+            
+            SppegInformation savedNode = service.addChildNode(parentId, deptId, newNodeId, newNodeName, description);
+            
+            Map<String, Object> response = new HashMap<>();
+            response.put("message", "Node added successfully");
+            response.put("node", savedNode);
+            
+            return ResponseEntity.status(HttpStatus.CREATED).body(response);
+            
+        } catch (Exception e) {
+            logger.error("Error adding child node", e);
+            Map<String, String> error = new HashMap<>();
+            error.put("error", e.getMessage());
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(error);
+        }
+    }
+
+    // NEW: Delete node endpoint
+    @DeleteMapping("/delete/{sppeg_id}/{parent_id}/{department_id}")
+    public ResponseEntity<?> deleteNode(@PathVariable("sppeg_id") String sppegId,
+                                       @PathVariable("parent_id") String parentId,
+                                       @PathVariable("department_id") String departmentId) {
+        try {
+            SppegInformationId key = new SppegInformationId(sppegId, parentId, departmentId);
+            
+            // Check if node exists
+            if (!service.nodeExists(key)) {
+                Map<String, String> error = new HashMap<>();
+                error.put("error", "Node not found");
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body(error);
+            }
+            
+            service.deleteNodeAndChildren(key);
+            
+            Map<String, String> response = new HashMap<>();
+            response.put("message", "Node and its children deleted successfully");
+            return ResponseEntity.ok(response);
+            
+        } catch (Exception e) {
+            logger.error("Error deleting node", e);
+            Map<String, String> error = new HashMap<>();
+            error.put("error", e.getMessage());
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(error);
+        }
     }
 
 }
