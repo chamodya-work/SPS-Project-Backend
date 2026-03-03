@@ -138,4 +138,49 @@ public class SppegInformationController {
         }
     }
 
+
+    // UPDATE: Update node endpoint
+    @PutMapping("/update/{sppeg_id}/{parent_id}/{department_id}")
+    public ResponseEntity<?> updateNode(@PathVariable("sppeg_id") String sppegId,
+                                       @PathVariable("parent_id") String parentId,
+                                       @PathVariable("department_id") String departmentId,
+                                       @RequestBody Map<String, String> request) {
+        try {
+            SppegInformationId key = new SppegInformationId(sppegId, parentId, departmentId);
+            
+            // Check if node exists
+            if (!service.nodeExists(key)) {
+                Map<String, String> error = new HashMap<>();
+                error.put("error", "Node not found");
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body(error);
+            }
+            
+            String newName = request.get("name");
+            String newDescription = request.get("description");
+            
+            logger.info("Updating node: {} with name: {}, description: {}", sppegId, newName, newDescription);
+            
+            SppegInformation updatedNode = service.updateNode(key, newName, newDescription);
+            
+            if (updatedNode == null) {
+                Map<String, String> error = new HashMap<>();
+                error.put("error", "Failed to update node");
+                return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(error);
+            }
+            
+            Map<String, Object> response = new HashMap<>();
+            response.put("message", "Node updated successfully");
+            response.put("node", updatedNode);
+            
+            return ResponseEntity.ok(response);
+            
+        } catch (Exception e) {
+            logger.error("Error updating node", e);
+            Map<String, String> error = new HashMap<>();
+            error.put("error", e.getMessage());
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(error);
+        }
+    }
+
+
 }
