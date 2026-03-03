@@ -139,12 +139,12 @@ public class SppegInformationController {
     }
 
 
-    // UPDATE: Update node endpoint
-    @PutMapping("/update/{sppeg_id}/{parent_id}/{department_id}")
-    public ResponseEntity<?> updateNode(@PathVariable("sppeg_id") String sppegId,
-                                       @PathVariable("parent_id") String parentId,
-                                       @PathVariable("department_id") String departmentId,
-                                       @RequestBody Map<String, String> request) {
+     // UPDATE: Update node name only endpoint
+    @PutMapping("/update-name/{sppeg_id}/{parent_id}/{department_id}")
+    public ResponseEntity<?> updateNodeName(@PathVariable("sppeg_id") String sppegId,
+                                           @PathVariable("parent_id") String parentId,
+                                           @PathVariable("department_id") String departmentId,
+                                           @RequestBody Map<String, String> request) {
         try {
             SppegInformationId key = new SppegInformationId(sppegId, parentId, departmentId);
             
@@ -156,26 +156,32 @@ public class SppegInformationController {
             }
             
             String newName = request.get("name");
-            String newDescription = request.get("description");
             
-            logger.info("Updating node: {} with name: {}, description: {}", sppegId, newName, newDescription);
+            // Validate name
+            if (newName == null || newName.trim().isEmpty()) {
+                Map<String, String> error = new HashMap<>();
+                error.put("error", "Node name cannot be empty");
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(error);
+            }
             
-            SppegInformation updatedNode = service.updateNode(key, newName, newDescription);
+            logger.info("Updating node name: {} to new name: {}", sppegId, newName);
+            
+            SppegInformation updatedNode = service.updateNodeName(key, newName);
             
             if (updatedNode == null) {
                 Map<String, String> error = new HashMap<>();
-                error.put("error", "Failed to update node");
+                error.put("error", "Failed to update node name");
                 return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(error);
             }
             
             Map<String, Object> response = new HashMap<>();
-            response.put("message", "Node updated successfully");
+            response.put("message", "Node name updated successfully");
             response.put("node", updatedNode);
             
             return ResponseEntity.ok(response);
             
         } catch (Exception e) {
-            logger.error("Error updating node", e);
+            logger.error("Error updating node name", e);
             Map<String, String> error = new HashMap<>();
             error.put("error", e.getMessage());
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(error);
