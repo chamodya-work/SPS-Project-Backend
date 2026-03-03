@@ -79,14 +79,15 @@ public class SppegInformationService {
         return repository.existsById(id);
     }
 
-    // NEW: Update node
-    public SppegInformation updateNode(SppegInformationId id, String newName, String newDescription) {
+    // UPDATE: Update node name only (removed description update)
+    public SppegInformation updateNodeName(SppegInformationId id, String newName) {
         Optional<SppegInformation> nodeOpt = repository.findById(id);
         if (nodeOpt.isPresent()) {
             SppegInformation node = nodeOpt.get();
-            if (newName != null) node.setName(newName);
-            if (newDescription != null) node.setDescription(newDescription);
-            return repository.save(node);
+            if (newName != null && !newName.trim().isEmpty()) {
+                node.setName(newName);
+                return repository.save(node);
+            }
         }
         return null;
     }
