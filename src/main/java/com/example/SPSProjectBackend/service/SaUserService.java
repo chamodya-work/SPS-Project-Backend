@@ -379,6 +379,7 @@ import util.common.Encryption;
 
 import java.time.LocalDate;
 import java.time.ZoneId;
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -495,5 +496,19 @@ public class SaUserService {
         }
 
         return user;
+    }
+
+    public List<String> getUserIdsByDeptPrefix(String deptId) {
+
+        if (deptId == null || deptId.isEmpty()) {
+            throw new RuntimeException("DeptId cannot be empty");
+        }
+
+        // Extract prefix (424 from 424.00)
+        String prefix = deptId.split("\\.")[0];
+
+        logger.info("Fetching users for prefix: {}", prefix);
+
+        return saUserRepository.findUserIdsByRptUserPrefix(prefix);
     }
 }

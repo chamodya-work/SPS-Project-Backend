@@ -185,6 +185,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.web.client.RestTemplate;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 @RestController
@@ -471,6 +472,17 @@ public class SaUserController {
             e.printStackTrace();
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                     .body(Map.of("error", "Login service unavailable: " + e.getMessage()));
+        }
+    }
+
+    @GetMapping("/users/dept/{deptId}")
+    public ResponseEntity<?> getUsersByDept(@PathVariable String deptId) {
+        try {
+            List<String> users = saUserService.getUserIdsByDeptPrefix(deptId);
+            return ResponseEntity.ok(users);
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(Map.of("error", e.getMessage()));
         }
     }
 
