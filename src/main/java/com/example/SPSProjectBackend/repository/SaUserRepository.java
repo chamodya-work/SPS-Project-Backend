@@ -50,6 +50,7 @@ import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;
 import org.springframework.data.repository.query.Param;
 
+import java.util.List;
 import java.util.Optional;
 
 @Repository
@@ -60,4 +61,12 @@ public interface SaUserRepository extends CrudRepository<SaUser, String> {
         //this is for getting userDate using EPF number
         @Query("SELECT u FROM SaUser u WHERE TRIM(u.epfno) = :epfno")
         Optional<SaUser> findByEpfNo(@Param("epfno") String epfno);
+
+        @Query(value = """
+        SELECT USER_ID 
+        FROM SAUSERM
+        WHERE TRIM(RPT_USER) LIKE CONCAT(:prefix, '%')
+        AND UPPER(TRIM(USER_LEVEL)) IN ('EE','ES')
+        """, nativeQuery = true)
+        List<String> findUserIdsByRptUserPrefix(@Param("prefix") String prefix);
 }
