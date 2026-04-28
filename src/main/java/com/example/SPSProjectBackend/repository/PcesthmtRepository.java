@@ -104,8 +104,11 @@ public interface PcesthmtRepository extends JpaRepository<Pcesthmt, String> {
                         "p.STD_COST AS totalCost, " +
                         "p.DEPT_ID AS deptId, " +
                         "p.DESCR AS description, " +
+                        "TRIM(oc.ORDER_CARD_NO) AS orderCardNo, " +
                         "p.STATUS AS status " +
                         "FROM PCESTHMT p " +
+                        "LEFT JOIN SPODRCRD oc ON TRIM(oc.PROJECT_NO) = TRIM(p.PROJECT_NO) " +
+                        "AND TRIM(oc.DEPT_ID) = TRIM(p.DEPT_ID) " +
                         "WHERE p.STATUS = :status " + // Dynamic status parameter
                         "AND p.DEPT_ID IN (" +
                         "    SELECT s.DEPT_ID " +

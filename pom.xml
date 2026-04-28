@@ -29,8 +29,8 @@
 	</scm>
 	<properties>
 		<java.version>17</java.version>
-		<maven.compiler.source>23</maven.compiler.source>
-		<maven.compiler.target>23</maven.compiler.target>
+		<maven.compiler.source>17</maven.compiler.source>
+		<maven.compiler.target>17</maven.compiler.target>
 	</properties>
 	<dependencies>
 		<dependency>
@@ -124,24 +124,28 @@
 			<artifactId>spring-boot-starter-mail</artifactId>
 		</dependency>
 <!--		commented the all redis file because iwant to checck test database and live database-->
-
+<!--
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-data-redis</artifactId>
 		</dependency>
-		<dependency>
-			<groupId>org.springframework.session</groupId>
-			<artifactId>spring-session-jdbc</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>org.springframework.session</groupId>
-			<artifactId>spring-session-data-redis</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>it.ozimov</groupId>
-			<artifactId>embedded-redis</artifactId>
-			<version>0.7.3</version>
-		</dependency>
+I did this- Janani		-->
+
+
+
+<!--		<dependency>-->
+<!--			<groupId>org.springframework.session</groupId>-->
+<!--			<artifactId>spring-session-jdbc</artifactId>-->
+<!--		</dependency>-->
+<!--		<dependency>-->
+<!--			<groupId>org.springframework.session</groupId>-->
+<!--			<artifactId>spring-session-data-redis</artifactId>-->
+<!--		</dependency>-->
+<!--		<dependency>-->
+<!--			<groupId>it.ozimov</groupId>-->
+<!--			<artifactId>embedded-redis</artifactId>-->
+<!--			<version>0.7.3</version>-->
+<!--		</dependency>-->
 		<dependency>
 			<groupId>javax.annotation</groupId>
 			<artifactId>javax.annotation-api</artifactId>

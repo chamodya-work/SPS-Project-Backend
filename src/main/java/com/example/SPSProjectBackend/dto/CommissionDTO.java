@@ -6,6 +6,7 @@ public class CommissionDTO {
     private Long totalCost;
     private String deptId;
     private String description;
+    private String orderCardNo;
     private Short status;
 
     public CommissionDTO() {
@@ -17,13 +18,25 @@ public class CommissionDTO {
             Number totalCost,
             String deptId,
             String description,
+            String orderCardNo,
             Number status) {
         this.projectNo = projectNo;
         this.estimateNo = estimateNo;
         this.totalCost = (totalCost == null) ? null : totalCost.longValue();
         this.deptId = deptId;
         this.description = description;
+        this.orderCardNo = orderCardNo;
         this.status = (status == null) ? null : status.shortValue();
+    }
+
+    public CommissionDTO(
+            String projectNo,
+            String estimateNo,
+            Number totalCost,
+            String deptId,
+            String description,
+            Number status) {
+        this(projectNo, estimateNo, totalCost, deptId, description, null, status);
     }
 
     // Getters and Setters
@@ -57,6 +70,14 @@ public class CommissionDTO {
 
     public void setDescription(String description) {
         this.description = description;
+    }
+
+    public String getOrderCardNo() {
+        return orderCardNo;
+    }
+
+    public void setOrderCardNo(String orderCardNo) {
+        this.orderCardNo = orderCardNo;
     }
 
     public Short getStatus() {
